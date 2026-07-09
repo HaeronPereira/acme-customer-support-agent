@@ -1,6 +1,5 @@
 # ACME Customer Support Agent
 
-> AI-assisted customer support application built for the EY Full Stack AI Engineering Case Study.
 
 ---
 
@@ -39,15 +38,15 @@ The project demonstrates several enterprise AI engineering concepts, including:
 
 # Key Features
 
-- 🤖 LangGraph-based conversational AI agent
-- 🔧 Custom MCP server exposing customer support business tools
-- 🔐 Keycloak authentication with JWT validation
-- 👥 Role-Based Access Control (`sales_user`, `support_user`, `admin`)
-- 🗄 PostgreSQL for customer, issue, issue history and next action management
-- 💾 Redis conversation memory using LangGraph Async Checkpointer
-- 📋 Executive Customer Escalation Summary skill
-- 📈 LangSmith integration and structured application logging
-- 🐳 Docker Compose deployment
+- LangGraph-based conversational AI agent
+- Custom MCP server exposing customer support business tools
+- Keycloak authentication with JWT validation
+- Role-Based Access Control (`sales_user`, `support_user`, `admin`)
+- PostgreSQL for customer, issue, issue history and next action management
+- Redis conversation memory using LangGraph Async Checkpointer
+- Executive Customer Escalation Summary skill
+- LangSmith integration and structured application logging
+- Docker Compose deployment
 
 
 # System Architecture
@@ -62,7 +61,8 @@ The application follows a modular service-oriented architecture where each compo
 - **Redis** stores LangGraph conversation checkpoints, allowing conversations to resume efficiently across requests.
 - **LangSmith** and structured application logging provide tracing, tool execution visibility, error logging, and latency tracking.
 
-> **Architecture Diagram:** `docs/architecture.png`
+
+![Architecture](docs/architecture.png)
 
 ---
 
@@ -329,8 +329,7 @@ All AI-generated suggestions were reviewed, validated, tested, and adapted befor
 
 A detailed account of AI usage, validation, and engineering decisions is available in:
 
-> `docs/ai_usage.md`
-
+[AI Usage Notes](docs/ai_usage.md).
 ---
 
 # Future Improvements
@@ -346,7 +345,3 @@ Given additional development time, the following enhancements would be considere
 - Support multi-session conversation history per user.
 
 ---
-
-# Acknowledgements
-
-This project was developed as part of the **EY Full Stack AI Engineering Case Study** and demonstrates the integration of modern AI engineering practices including conversational AI, Model Context Protocol (MCP), secure authentication, conversation memory, and enterprise observability.
