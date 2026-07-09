@@ -1,0 +1,111 @@
+
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+
+    container_name: acme-api
+
+    depends_on:
+      - postgres
+      - redis
+      - keycloak
+
+    env_file:
+      - .env
+
+    ports:
+      - "8000:8000"
+
+    volumes:
+      - .:/app
+
+    restart: unless-stopped
+
+
+  streamlit:
+    build:
+      context: .
+      dockerfile: Dockerfile.streamlit
+
+    container_name: acme-streamlit
+
+    depends_on:
+      - api
+
+    env_file:
+      - .env
+
+    ports:
+      - "8501:8501"
+
+    volumes:
+      - .:/app
+
+    restart: unless-stopped
+
+  mcp:
+    build:
+      context: .
+      dockerfile: mcp_server/Dockerfile.mcp
+
+    container_name: acme-mcp
+
+    depends_on:
+      - postgres
+
+    env_file:
+      - .env
+
+    ports:
+      - "8001:8000"
+
+    volumes:
+      - .:/app
+
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16
+    container_name: acme-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: acme_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis/redis-stack-server:latest
+    container_name: acme-redis
+    ports:
+      - "6379:6379"
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.2
+    container_name: acme-keycloak
+
+    command: start-dev
+
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+
+    ports:
+      - "8080:8080"
+
+    volumes:
+    - keycloak_data:/opt/keycloak/data
+
+volumes:
+  postgres_data:
+  keycloak_data:
+

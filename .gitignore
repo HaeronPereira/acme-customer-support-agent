@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.venv/
+
+# Environment variables
+.env
+
+# VS Code
+.vscode/
+
+# Python cache
+.pytest_cache/
+.mypy_cache/
+
+# Logs
+logs/
+*.log
+
+# Docker
+postgres_data/
+redis_data/
+
+# Streamlit
+.streamlit/secrets.toml
+
+
+# Windows
+Thumbs.db
