@@ -12,10 +12,8 @@ from app.services.customer_service import (
 
 
 
-# ==========================================================
-# LANGCHAIN TOOLS
-# ==========================================================
 
+# LANGCHAIN TOOLS
 
 @tool
 def customer_escalation_summary_tool(customer_name: str) -> str:
@@ -60,9 +58,8 @@ def update_issue_status_tool(
     finally:
         db.close()
 
-# ==========================================================
+
 # TOOL REGISTRY
-# ==========================================================
 
 TOOLS = [
       
