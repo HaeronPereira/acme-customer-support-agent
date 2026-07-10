@@ -90,10 +90,7 @@ async def get_graph():
     )
 
     return graph
-#graph = graph_builder.compile(
-#    checkpointer=checkpointer,
-#    name="acme_customer_support_agent",
-#)
+
 async def chat(
     user_message: str,
     session_id: str = "default",

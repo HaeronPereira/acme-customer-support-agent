@@ -21,7 +21,7 @@
 
 The ACME Customer Support Agent is an AI-powered customer support application that combines conversational AI with enterprise backend services to help support teams retrieve customer information, investigate issues, recommend next actions, and generate executive escalation summaries.
 
-The solution is designed around a modular architecture that separates conversational reasoning, business capabilities, authentication, persistence, and observability into independent components. The application uses a LangGraph agent to orchestrate tool execution, a custom Model Context Protocol (MCP) server to expose business functionality, PostgreSQL as the system of record, Redis for conversation memory, and Keycloak for authentication and role-based access control.
+The solution is designed around a modular architecture that separates conversational reasoning, business capabilities, authentication, persistence, and observability into independent components. The application uses a LangGraph agent to orchestrate tool execution, a custom Model Context Protocol (MCP) server to expose business functionality, PostgreSQL as the system of record, Redis for conversation memory, and Keycloak for authentication and role based access control.
 
 The project demonstrates several enterprise AI engineering concepts, including:
 
@@ -62,7 +62,8 @@ The application follows a modular service-oriented architecture where each compo
 - **LangSmith** and structured application logging provide tracing, tool execution visibility, error logging, and latency tracking.
 
 
-![Architecture](docs/architecture.png)
+![System Architecture - Layered View](docs/architecture.png)
+![System Architecture - End to End Flow](docs/ architecture_detailed.png)
 
 ---
 
@@ -150,7 +151,7 @@ The application uses Keycloak for authentication and role-based access control. 
 | Username | Role | Permissions |
 |----------|------|-------------|
 | alice.support | support_user | View customers, view issues, update issue status |
-| bob.sales | sales_user | Read-only access to customer and issue information |
+| bob.sales | sales_user | Read only access to customer and issue information |
 | admin.user | admin | Full access including creating recommended next actions |
 
 > Authentication is performed through the Streamlit login screen. JWT tokens are issued by Keycloak and automatically included in all subsequent API requests.
@@ -175,7 +176,7 @@ The agent currently supports:
 - Recommended next action retrieval
 - Executive escalation summary generation
 
-Conversation state is maintained using Redis-backed LangGraph checkpoints, allowing the agent to preserve conversational context across requests.
+Conversation state is maintained using Redis backed LangGraph checkpoints, allowing the agent to preserve conversational context across requests.
 
 ---
 
@@ -183,12 +184,15 @@ Conversation state is maintained using Redis-backed LangGraph checkpoints, allow
 
 Business functionality is exposed through a custom FastMCP server.
 
-Instead of allowing the AI agent to communicate directly with the database, the agent invokes MCP tools which encapsulate business logic behind a well-defined interface.
+Instead of allowing the AI agent to communicate directly with the database, the agent invokes MCP tools which encapsulate business logic behind a well defined interface.
 
 The current MCP tools include:
 
 - Customer Lookup
 - Open Customer Issues
+- Issue History
+- Recommended Next Action
+
 
 Additional business capabilities remain implemented as local LangGraph tools where direct application integration is more appropriate, demonstrating that the architecture can combine both MCP and native tools within a single agent workflow.
 
@@ -204,7 +208,7 @@ Users authenticate through the Streamlit interface, after which a JWT access tok
 
 The FastAPI backend validates every incoming token before processing requests.
 
-Role-Based Access Control (RBAC) is enforced on protected endpoints using the authenticated user's assigned Keycloak role.
+Role Based Access Control (RBAC) is enforced on protected endpoints using the authenticated user's assigned Keycloak role.
 
 The following roles are implemented:
 
@@ -285,7 +289,7 @@ LangGraph was selected to orchestrate tool execution and conversation state beca
 
 ### Model Context Protocol (MCP)
 
-Customer lookup and issue retrieval are exposed through an MCP server to demonstrate a modular service-oriented architecture. Additional application-specific capabilities remain implemented as local tools where tighter integration with the backend is more appropriate.
+Customer lookup and issue retrieval are exposed through an MCP server to demonstrate a modular service oriented architecture. Additional application specific capabilities remain implemented as local tools where tighter integration with the backend is more appropriate.
 
 ### PostgreSQL vs Redis
 
@@ -295,7 +299,7 @@ Redis is used exclusively for conversation checkpoints, allowing temporary conve
 
 ### Keycloak
 
-Keycloak provides standards-based authentication and role management without requiring custom authentication logic within the application. This keeps authentication concerns separated from application business logic while supporting JWT validation and role-based access control.
+Keycloak provides standards based authentication and role management without requiring custom authentication logic within the application. This keeps authentication concerns separated from application business logic while supporting JWT validation and role-based access control.
 
 ### Asynchronous Design
 
@@ -309,23 +313,23 @@ The solution was evaluated against a representative set of customer support scen
 
 The evaluation focused on verifying that:
 
-- The LangGraph agent selected the appropriate local or MCP tool(s) for each request.
+- The LangGraph agent selected the appropriate local or MCP tool's for each request.
 - Responses were grounded using PostgreSQL data rather than generated from the language model alone.
-- Role-Based Access Control (RBAC) was correctly enforced for all protected operations.
+- Role Based Access Control (RBAC) was correctly enforced for all protected operations.
 - Recommended next actions were appropriate for the customer's issue context.
 - Observability captured tool execution, request traces, latency, and errors throughout the workflow.
 
 Detailed evaluation scenarios and results are available in:
 
-> `docs/evaluation.md`
+> `docs/evaluation_test_set.xlsx`
 
 ---
 
 # AI Tool Usage Summary
 
-AI coding assistants were used throughout development as an engineering aid to explore implementation approaches, review code structure, generate boilerplate, and improve documentation.
+AI coding assistants were used throughout development as an engineering aid to explore implementation approaches, review code structure, and improve documentation.
 
-All AI-generated suggestions were reviewed, validated, tested, and adapted before being incorporated into the solution. Particular attention was given to authentication, security, asynchronous execution, and third-party library behaviour to ensure compatibility with the selected technology stack.
+All AI generated suggestions were reviewed, validated, tested, and adapted before being incorporated into the solution. Particular attention was given to authentication, security, asynchronous execution, and third party library behaviour to ensure compatibility with the selected technology stack.
 
 A detailed account of AI usage, validation, and engineering decisions is available in:
 
@@ -337,11 +341,11 @@ A detailed account of AI usage, validation, and engineering decisions is availab
 Given additional development time, the following enhancements would be considered:
 
 - Expand the MCP server to expose additional business capabilities.
-- Introduce semantic retrieval for knowledge-base style documentation alongside structured database queries.
-- Implement conversation summarisation for very long-running conversations.
-- Add automated integration and end-to-end testing.
-- Introduce metrics dashboards using OpenTelemetry and Grafana.
-- Extend role management with finer-grained permissions.
+- Introduce semantic retrieval for knowledge base style documentation alongside structured database queries.
+- Implement conversation summarisation for very long running conversations.
+- Add automated integration and end to end testing.
+- Introduce metrics dashboards using OpenTelemetry.
+- Extend role management with finer grained permissions.
 - Support multi-session conversation history per user.
 
 ---

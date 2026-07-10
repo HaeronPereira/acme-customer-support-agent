@@ -11,7 +11,7 @@ from app.schemas import LoginRequest
 from app.auth import login
 from app.logger import logger
 import time
-import re
+from app.intent_router import detect_intent
 from app.schemas import NextActionCreate
 from app.schemas import CustomerResponse, IssueResponse
 from app.services.customer_service import (
@@ -26,36 +26,6 @@ app = FastAPI(
     version="1.0.0",
 )
 
-def parse_update_request(message: str):
-    """
-    Parse commands like:
-
-    Update issue 4 to Closed
-    Change issue 5 to Resolved
-    Mark issue 3 as In Progress
-    """
-
-    pattern = (
-        r"(?:update|change|mark)\s+"
-        r"issue\s+(\d+)\s+"
-        r"(?:to|as)\s+"
-        r"(open|in progress|resolved|closed)"
-    )
-
-    match = re.search(
-        pattern,
-        message,
-        re.IGNORECASE,
-    )
-
-    if not match:
-        return None
-
-    issue_id = int(match.group(1))
-
-    status = match.group(2).title()
-
-    return issue_id, status
 
 @app.middleware("http")
 async def log_requests(request, call_next):
@@ -170,9 +140,9 @@ async def chat_endpoint(
     # --------------------------------------------------
     # Detect issue update requests
     # --------------------------------------------------
-    update = parse_update_request(request.message)
-
-    if update:
+    intent = await detect_intent(request.message)
+    
+    if intent.intent=="update_issue":
 
         require_role(
             user,
@@ -182,17 +152,26 @@ async def chat_endpoint(
             ],
         )
 
-        issue_id, status = update
 
         db = next(get_db())
 
         try:
 
-            issue = update_issue_status(
-                db,
-                issue_id,
-                status,
-            )
+            if intent.issue_id:
+
+                issue = update_issue_status(
+                    db,
+                    intent.issue_id,
+                    intent.status,
+                )
+
+            else:
+
+                return ChatResponse(
+                    response=(
+                        "Please specify the issue ID."
+                    )
+                )
 
         finally:
 
@@ -201,13 +180,14 @@ async def chat_endpoint(
         if issue is None:
 
             return ChatResponse(
-                response=f"Issue {issue_id} was not found."
+                response="Issue not found."
             )
 
         return ChatResponse(
             response=(
-                f"✅ Issue {issue_id} has been updated successfully.\n\n"
-                f"Current Status: {status}"
+                f"✅ Issue {issue.issue_id} "
+                f"updated to "
+                f"{intent.status}."
             )
         )
 
@@ -239,33 +219,6 @@ def me(user=Depends(get_current_user)):
     return user
 
 
-@app.get("/admin-test")
-def admin_test(
-    user=Depends(get_current_user),
-):
-
-    require_role(
-        user,
-        ["admin"],
-    )
-
-    return {
-        "message": "Welcome Admin!"
-    }
-
-@app.get("/support-test")
-def support_test(
-    user=Depends(get_current_user),
-):
-
-    require_role(
-        user,
-        ["admin", "support_user"],
-    )
-
-    return {
-        "message": "Support access granted."
-    }
 
 @app.patch(
     "/issues/{issue_id}",

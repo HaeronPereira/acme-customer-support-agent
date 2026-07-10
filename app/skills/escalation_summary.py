@@ -6,7 +6,7 @@ from app.services.customer_service import (
     get_customer_profile,
     get_open_issues,
     get_issue_history,
-    get_next_action,
+    get_recommended_next_actions,
 )
 
 
@@ -31,7 +31,7 @@ def customer_escalation_summary(customer_name: str) -> str:
         for issue in issues:
 
             history = get_issue_history(db, issue.issue_id)
-            action = get_next_action(db, issue.issue_id)
+            actions = get_recommended_next_actions(db, issue.issue_id)
 
             context.append(
                 {
@@ -49,53 +49,44 @@ def customer_escalation_summary(customer_name: str) -> str:
                         }
                         for h in history
                     ],
-                    "next_action": (
-                        {
-                            "action": action.action,
-                            "owner": action.owner,
-                            "status": action.status,
-                            "due_date": (
-                                action.due_date.isoformat()
-                                if action.due_date
-                                else None
-                            ),
-                        }
-                        if action
-                        else None
-                    ),
+                    "next_actions": actions,
                 }
             )
 
         prompt = f"""
-You are a Senior Customer Success Manager preparing an executive briefing.
+        You are a Senior Customer Success Manager preparing an executive escalation report.
 
-Customer Profile:
-{customer}
+        Customer Profile:
+        {customer}
 
-Issue Context:
-{context}
+        Issue Context:
+        {context}
 
-Instructions:
+        Instructions:
 
-- Base your analysis ONLY on the supplied data.
-- If a Next Action already exists, reference it before suggesting a new action.
-- recommend one more actions if there is only one next action but mention it is from AI
-- Mention the action owner whenever available.
-- Mention due dates when available.
-- Do not invent engineering updates.
-- If information is missing, explicitly state it.
+        - Use ONLY the supplied data.
+        - Never invent customer facts, issue history or engineering updates.
+        - Existing Next Actions come directly from the database.
+        - AI Recommended Next Steps must be clearly labelled as AI-generated recommendations and must not contradict Existing Next Actions (Database).
+        - If information is unavailable, write "No information available."
+        - Always include every heading exactly as shown below.
 
-Return the report with these headings:
+        # Executive Summary
 
-1. Executive Summary
-2. Customer Health
-3. Open Issues
-4. Existing Next Actions
-5. Business Risk
-6. Recommendations
-7. Missing Information
-8. Overall Priority
-"""
+        # Customer Health
+
+        # Open Issues
+
+        # Existing Next Actions (Database)
+
+        # AI Recommended Next Steps
+
+        # Business Risk
+
+        # Missing Information
+
+        # Overall Priority
+        """
 
         return llm.invoke(prompt).content
 
