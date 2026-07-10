@@ -8,10 +8,8 @@ from app.models import (
 )
 
 
+# Database Functions
 
-# ==========================================================
-# DATABASE FUNCTIONS
-# ==========================================================
 
 def get_customer_profile(db: Session, customer_name: str):
     """

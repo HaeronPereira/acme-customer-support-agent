@@ -11,7 +11,7 @@ from app.tools import TOOLS
 from app.checkpointer import initialize_checkpointer
 from app.logger import logger
 
-#llm_with_tools = llm.bind_tools(TOOLS)
+
 
 graph = None
 llm_with_tools = None
@@ -34,8 +34,6 @@ async def chatbot(state: AgentState):
     return {
         "messages": [response]
     }
-
-#tool_node = ToolNode(TOOLS)
 
 
 

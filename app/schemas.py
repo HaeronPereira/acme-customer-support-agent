@@ -4,9 +4,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict
 
 
-# -----------------------------
-# Customer Response Schema
-# -----------------------------
+
 class CustomerResponse(BaseModel):
     customer_id: int
     name: str
@@ -20,9 +18,7 @@ class CustomerResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-# -----------------------------
-# Issue Response Schema
-# -----------------------------
+
 class IssueResponse(BaseModel):
     issue_id: int
     customer_id: int

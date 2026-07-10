@@ -9,7 +9,7 @@ __pycache__/
 # Environment variables
 .env
 
-# VS Code
+
 .vscode/
 
 # Python cache
@@ -28,5 +28,5 @@ redis_data/
 .streamlit/secrets.toml
 
 
-# Windows
+
 Thumbs.db

@@ -1,18 +1,14 @@
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
 from app.checkpointer import initialize_checkpointer,shutdown_checkpointer
-from app.agent import chat
-from app.agent import get_graph
-from app.schemas import ChatRequest, ChatResponse, IssueStatusUpdate, IssueUpdateResponse
+from app.agent import chat, get_graph
+from app.schemas import ChatRequest, ChatResponse, IssueStatusUpdate, IssueUpdateResponse,LoginRequest, NextActionCreate
 from app.database import get_db
-from app.auth import get_current_user
+from app.auth import get_current_user, login
 from app.rbac import require_role
-from app.schemas import LoginRequest
-from app.auth import login
 from app.logger import logger
 import time
 from app.intent_router import detect_intent
-from app.schemas import NextActionCreate
 from app.schemas import CustomerResponse, IssueResponse
 from app.services.customer_service import (
     get_customer_profile,

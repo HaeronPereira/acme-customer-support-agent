@@ -9,9 +9,9 @@ st.set_page_config(
     layout="wide",
 )
 
-# -----------------------------
+
 # Session State
-# -----------------------------
+
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
@@ -25,9 +25,9 @@ if "conversation_id" not in st.session_state:
     st.session_state.conversation_id = str(uuid.uuid4())
 
 
-# -----------------------------
+
 # Sidebar
-# -----------------------------
+
 with st.sidebar:
 
     st.title("🔐 Authentication")
@@ -200,9 +200,9 @@ with st.sidebar:
         st.rerun()
 
 
-# -----------------------------
+
 # Main Page
-# -----------------------------
+
 st.title("🤖 ACME Customer Support Agent")
 
 st.caption(
@@ -224,9 +224,9 @@ for example in examples:
 
 st.divider()
 
-# -----------------------------
+
 # Authentication Required
-# -----------------------------
+
 if not st.session_state.user:
 
     st.info(
@@ -236,9 +236,9 @@ if not st.session_state.user:
     st.stop()
 
 
-# -----------------------------
+
 # Chat History
-# -----------------------------
+
 for message in st.session_state.messages:
 
     with st.chat_message(message["role"]):
@@ -246,9 +246,9 @@ for message in st.session_state.messages:
         st.markdown(message["content"])
 
 
-# -----------------------------
+
 # Chat Input
-# -----------------------------
+
 question = st.chat_input(
     "Ask a question..."
 )
