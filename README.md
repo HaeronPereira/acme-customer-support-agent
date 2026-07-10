@@ -61,9 +61,11 @@ The application follows a modular service-oriented architecture where each compo
 - **Redis** stores LangGraph conversation checkpoints, allowing conversations to resume efficiently across requests.
 - **LangSmith** and structured application logging provide tracing, tool execution visibility, error logging, and latency tracking.
 
-
+##### System Architecture - Layered View
 ![System Architecture - Layered View](docs/architecture.png)
-![System Architecture - End to End Flow](docs/ architecture_detailed.png)
+
+##### System Architecture - End to End Flow
+![System Architecture - End to End Flow](docs/architecture_detailed.png)
 
 ---
 
